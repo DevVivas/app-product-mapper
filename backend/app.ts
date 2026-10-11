@@ -66,8 +66,36 @@ app.use("/api", apiRoutes);
 app.use(notFoundHandler);
 app.use(errorHandler);
 
-app.listen(env.port, () => {
+const server = app.listen(env.port, () => {
   console.log(`ProductMapper backend escuchando en el puerto ${env.port}`);
 });
+
+// Cierre ordenado: Render envía SIGTERM en cada deploy o suspensión.
+// Se deja de aceptar conexiones, se terminan las peticiones en curso y se
+// liberan las conexiones del pooler de Supabase antes de salir.
+let shuttingDown = false;
+
+async function shutdown(signal: string) {
+  if (shuttingDown) return;
+  shuttingDown = true;
+  console.log(`${signal} recibido, cerrando servidor...`);
+
+  // Red de seguridad: si algo queda colgado, salir igualmente.
+  setTimeout(() => {
+    console.error("Cierre forzado por timeout");
+    process.exit(1);
+  }, 10_000).unref();
+
+  server.close(async () => {
+    try {
+      await prisma.$disconnect();
+    } finally {
+      process.exit(0);
+    }
+  });
+}
+
+process.on("SIGTERM", () => void shutdown("SIGTERM"));
+process.on("SIGINT", () => void shutdown("SIGINT"));
 
 export default app;
