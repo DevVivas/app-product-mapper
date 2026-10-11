@@ -2,12 +2,13 @@
 
 Sistema de conversión y búsqueda de productos entre proveedores externos y el sistema local.
 
+<img width="1917" height="872" alt="module-equivalence" src="https://github.com/user-attachments/assets/2fe9b5eb-3b11-49e9-a557-b9172cbc9b05" />
+
 ## Stack
 
 - **Backend**: Express + TypeScript + Prisma + PostgreSQL + Zod
 - **Frontend**: React + Vite + TypeScript + Tailwind CSS
 - **Infra**: Docker Compose (dev + prod)
-- **Prod**: imágenes multi-stage sin root, Nginx sirviendo el frontend y haciendo proxy al API
 
 ## Estructura
 
