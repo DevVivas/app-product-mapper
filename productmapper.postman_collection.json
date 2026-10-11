@@ -1,0 +1,140 @@
+{
+  "info": {
+    "name": "ProductMapper API",
+    "_postman_id": "d63f16a0-68b4-4b84-a9b2-4896b2f5c0a1",
+    "description": "API de ProductMapper. Base URL: http://localhost:3000/api",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Búsqueda",
+      "item": [
+        {
+          "name": "Búsqueda universal (código o nombre)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/search?q=coca&providerId=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["search"],
+              "query": [
+                { "key": "q", "value": "coca", "description": "Texto a buscar (código o nombre de producto/proveedor). Obligatorio." },
+                { "key": "providerId", "value": "1", "description": "Opcional. Filtra por proveedor." }
+              ]
+            },
+            "description": "Búsqueda universal: coincidencias parciales en codigo_proveedor, nombre_proveedor, codigo y nombre del producto."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Proveedores",
+      "item": [
+        {
+          "name": "Listar proveedores",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/providers", "host": ["{{baseUrl}}"], "path": ["providers"] } }
+        },
+        {
+          "name": "Crear proveedor",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Distribuidora Andina S.A.\"\n}" },
+            "url": { "raw": "{{baseUrl}}/providers", "host": ["{{baseUrl}}"], "path": ["providers"] }
+          }
+        },
+        {
+          "name": "Obtener proveedor",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/providers/1", "host": ["{{baseUrl}}"], "path": ["providers", "1"] } }
+        },
+        {
+          "name": "Actualizar proveedor",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Distribuidora Andina S.A.C.\"\n}" },
+            "url": { "raw": "{{baseUrl}}/providers/1", "host": ["{{baseUrl}}"], "path": ["providers", "1"] }
+          }
+        },
+        {
+          "name": "Eliminar proveedor (y sus equivalencias)",
+          "request": { "method": "DELETE", "header": [], "url": { "raw": "{{baseUrl}}/providers/1", "host": ["{{baseUrl}}"], "path": ["providers", "1"] } }
+        }
+      ]
+    },
+    {
+      "name": "Productos",
+      "item": [
+        {
+          "name": "Listar productos",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/products", "host": ["{{baseUrl}}"], "path": ["products"] } }
+        },
+        {
+          "name": "Crear producto",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"code\": \"780123456\",\n  \"name\": \"BEBIDA COCA COLA 1.5 LT RETORNABLE\"\n}" },
+            "url": { "raw": "{{baseUrl}}/products", "host": ["{{baseUrl}}"], "path": ["products"] }
+          }
+        },
+        {
+          "name": "Obtener producto",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/products/1", "host": ["{{baseUrl}}"], "path": ["products", "1"] } }
+        },
+        {
+          "name": "Actualizar producto",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"code\": \"780123456\",\n  \"name\": \"BEBIDA COCA COLA 1.5 LT\"\n}" },
+            "url": { "raw": "{{baseUrl}}/products/1", "host": ["{{baseUrl}}"], "path": ["products", "1"] }
+          }
+        },
+        {
+          "name": "Eliminar producto (y sus equivalencias)",
+          "request": { "method": "DELETE", "header": [], "url": { "raw": "{{baseUrl}}/products/1", "host": ["{{baseUrl}}"], "path": ["products", "1"] } }
+        }
+      ]
+    },
+    {
+      "name": "Equivalencias",
+      "item": [
+        {
+          "name": "Listar equivalencias",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/equivalences", "host": ["{{baseUrl}}"], "path": ["equivalences"] } }
+        },
+        {
+          "name": "Crear equivalencia",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"providerId\": 1,\n  \"providerCode\": \"PROV-001\",\n  \"providerName\": \"BEBIDA COCA COLA 1.5 LT\",\n  \"localProductId\": 2\n}" },
+            "url": { "raw": "{{baseUrl}}/equivalences", "host": ["{{baseUrl}}"], "path": ["equivalences"] }
+          }
+        },
+        {
+          "name": "Obtener equivalencia",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/equivalences/1", "host": ["{{baseUrl}}"], "path": ["equivalences", "1"] } }
+        },
+        {
+          "name": "Actualizar equivalencia",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"providerId\": 1,\n  \"providerCode\": \"PROV-001\",\n  \"providerName\": \"BEBIDA COCA COLA 1.5 LT RETORNABLE\",\n  \"localProductId\": 2\n}" },
+            "url": { "raw": "{{baseUrl}}/equivalences/1", "host": ["{{baseUrl}}"], "path": ["equivalences", "1"] }
+          }
+        },
+        {
+          "name": "Eliminar equivalencia",
+          "request": { "method": "DELETE", "header": [], "url": { "raw": "{{baseUrl}}/equivalences/1", "host": ["{{baseUrl}}"], "path": ["equivalences", "1"] } }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000/api", "type": "string" }
+  ]
+}

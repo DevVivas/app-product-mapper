@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Provider {
+  id        Int      @id @default(autoincrement())
+  name      String   @map("nombre")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  equivalences Equivalence[]
+
+  @@map("proveedores")
+}
+
+model LocalProduct {
+  id        Int      @id @default(autoincrement())
+  code      String   @unique @map("codigo")
+  name      String   @map("nombre")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  equivalences Equivalence[]
+
+  @@map("productos_locales")
+}
+
+model Equivalence {
+  id             Int      @id @default(autoincrement())
+  providerId     Int      @map("proveedor_id")
+  providerCode   String   @map("codigo_proveedor")
+  providerName   String   @map("nombre_proveedor")
+  localProductId Int      @map("producto_local_id")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  provider     Provider     @relation(fields: [providerId], references: [id])
+  localProduct LocalProduct @relation(fields: [localProductId], references: [id])
+
+  @@unique([providerId, providerCode], name: "uq_provider_code", map: "uq_proveedor_codigo")
+  @@index([providerCode], map: "idx_equivalencias_codigo_proveedor")
+  @@index([providerName], map: "idx_equivalencias_nombre_proveedor")
+  @@map("equivalencias")
+}
