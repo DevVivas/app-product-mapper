@@ -6,6 +6,7 @@ import { rateLimit } from "express-rate-limit";
 import { env } from "./config/env";
 import { prisma } from "./config/prisma";
 import { asyncHandler } from "./middleware/asyncHandler";
+import { requireAuth } from "./middleware/requireAuth";
 import apiRoutes from "./routes";
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler";
 
@@ -61,7 +62,7 @@ app.get(
 );
 
 app.use("/api/search", searchLimiter);
-app.use("/api", apiRoutes);
+app.use("/api", requireAuth, apiRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

@@ -29,6 +29,8 @@ services:
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/product_mapper
       PORT: 3000
       NODE_ENV: development
+      SUPABASE_URL: ${SUPABASE_URL:?Define SUPABASE_URL in .env}
+      SUPABASE_JWT_AUDIENCE: ${SUPABASE_JWT_AUDIENCE:-authenticated}
     ports:
       - "3000:3000"
     depends_on:
@@ -51,6 +53,8 @@ services:
     restart: unless-stopped
     environment:
       VITE_API_URL: http://localhost:3000/api
+      VITE_SUPABASE_URL: ${VITE_SUPABASE_URL:-}
+      VITE_SUPABASE_ANON_KEY: ${VITE_SUPABASE_ANON_KEY:-}
     ports:
       - "5173:5173"
     depends_on:

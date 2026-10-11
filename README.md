@@ -39,6 +39,7 @@ Sistema de conversión y búsqueda de productos entre proveedores externos y el 
 | Método | Ruta | Descripción |
 |--------|------|-------------|
 | GET | `/health` | Health check |
+| GET | `/health/db` | Health check con consulta a PostgreSQL |
 | GET | `/api/providers` | Listar proveedores |
 | POST | `/api/providers` | Crear proveedor |
 | GET | `/api/providers/:id` | Obtener proveedor |
@@ -55,6 +56,10 @@ Sistema de conversión y búsqueda de productos entre proveedores externos y el 
 | PUT | `/api/equivalences/:id` | Actualizar equivalencia |
 | DELETE | `/api/equivalences/:id` | Eliminar equivalencia |
 | GET | `/api/search?q=...` | Búsqueda universal (código o nombre) |
+
+Todas las rutas `/api/*` requieren un JWT de acceso válido de Supabase en el
+encabezado `Authorization: Bearer <access_token>`. Los endpoints `/health` y
+`/health/db` son públicos para los health checks del servicio.
 
 > La validación de inputs se hace con Zod en el backend: campos requeridos,
 > sin espacios extremos (`trim`), `id` enteros positivos, y el update exige al
@@ -88,6 +93,8 @@ Respuesta de `/api/search`:
 ### Seguridad y performance
 
 - CORS restringido a orígenes de `CORS_ORIGINS` (coma-separados, default `http://localhost:5173`).
+- Autenticación Supabase en Express: valida la firma del JWT mediante el JWKS del proyecto, además del issuer, audiencia y expiración. El proyecto debe publicar claves asimétricas en el JWKS.
+- El frontend usa únicamente la clave pública publishable/anon; nunca configures una clave `service_role` en variables `VITE_*`.
 - Helmet, `express-rate-limit` (global 600/15min, search 60/1min) y `express.json({ limit: "1mb" })`.
 - `compression` gzip y `trust proxy`.
 - Índices GiN `pg_trgm` para búsqueda por `ILIKE %…%` en `proveedores`, `productos_locales` y `equivalencias`.
@@ -97,7 +104,7 @@ Respuesta de `/api/search`:
 ## Desarrollo local (Docker)
 
 ```bash
-cp env.example .env   # ajusta contraseñas si es necesario
+cp env.example .env   # configura el proyecto Supabase y la clave pública anon
 docker compose up --build
 ```
 - Frontend: http://localhost:5173
@@ -114,6 +121,12 @@ y `POSTGRES_DB` con valores propios y no reutilices las credenciales de desarrol
 Si la contraseña contiene caracteres reservados de URL, codifícala para que
 `DATABASE_URL` sea válida. `CORS_ORIGINS` debe contener los orígenes permitidos,
 separados por comas.
+Configura también `SUPABASE_URL`, `VITE_SUPABASE_URL` (URL del mismo proyecto),
+`VITE_SUPABASE_ANON_KEY` (clave publishable/anon) y, opcionalmente,
+`SUPABASE_JWT_AUDIENCE` (por defecto `authenticated`). Desactiva el registro
+público en Supabase Auth y crea/invita únicamente las cuentas autorizadas desde
+el panel de Supabase. No uses claves JWT legacy HS256: el backend valida tokens
+con el JWKS público del proyecto.
 
 ```bash
 docker compose -f docker-compose.prod.yml -p productmapper-prod up -d --build
@@ -124,6 +137,11 @@ docker compose -f docker-compose.prod.yml -p productmapper-prod up -d --build
 - Imágenes multi-stage: backend no-root (`node`), frontend no-root (`nginx` unprivileged).
 - Los servicios de producción incluyen health checks; Docker ignora archivos locales `node_modules`, builds y `.env` al construir imágenes.
 - No se publican los puertos de PostgreSQL ni del backend al host.
+
+En Render, define `SUPABASE_URL` y, si corresponde, `SUPABASE_JWT_AUDIENCE` en
+el servicio backend. En el servicio frontend, define `VITE_SUPABASE_URL` y
+`VITE_SUPABASE_ANON_KEY` como variables de entorno de build, además de
+`VITE_API_URL`. Vuelve a desplegar el frontend al cambiar esas variables.
 
 ## Desarrollo local (sin Docker)
 
