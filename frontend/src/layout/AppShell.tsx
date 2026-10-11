@@ -6,7 +6,7 @@ import {
   Boxes,
   Settings,
   Search,
-  Bell,
+  LogOut,
 } from "lucide-react";
 
 export type Section =
@@ -19,6 +19,8 @@ export type Section =
 interface AppShellProps {
   section: Section;
   onSectionChange: (section: Section) => void;
+  userEmail: string;
+  onSignOut: () => void;
   children: ReactNode;
 }
 
@@ -53,7 +55,7 @@ const meta: Record<Section, { title: string; sub: string }> = {
   },
 };
 
-export function AppShell({ section, onSectionChange, children }: AppShellProps) {
+export function AppShell({ section, onSectionChange, userEmail, onSignOut, children }: AppShellProps) {
   const { title, sub } = meta[section];
 
   return (
@@ -97,13 +99,16 @@ export function AppShell({ section, onSectionChange, children }: AppShellProps) 
             </h1>
             <p className="text-xs text-primary-foreground/75">{sub}</p>
           </div>
-          <div className="flex items-center gap-2">
-            <button className="p-2 rounded-md bg-white/10 text-primary-foreground opacity-0 pointer-events-none" aria-hidden>
-              <Search size={14} />
-            </button>
-            <button className="relative p-2 rounded-md text-primary-foreground hover:bg-white/10 transition-colors">
-              <Bell size={15} />
-              <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-accent" />
+          <div className="flex min-w-0 items-center gap-3">
+            <span className="hidden max-w-56 truncate text-xs text-primary-foreground/80 sm:block">
+              {userEmail}
+            </span>
+            <button
+              onClick={onSignOut}
+              className="flex items-center gap-2 rounded-md px-3 py-2 text-xs font-semibold text-primary-foreground transition-colors hover:bg-white/10"
+            >
+              <LogOut size={15} />
+              Cerrar sesión
             </button>
           </div>
         </header>

@@ -1,0 +1,163 @@
+From 625d294089ce4fd6ec454c7cce6f888830771fd5 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Sun, 11 Oct 2026 17:19:40 +0000
+Subject: [PATCH] =?UTF-8?q?chore:=20cierre=20ordenado,=20migraciones=20de?=
+ =?UTF-8?q?=20RLS/=C3=ADndices=20y=20CI?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+- app.ts: manejo de SIGTERM/SIGINT (server.close + prisma.$disconnect)
+- Dockerfile.prod: exec node para que reciba SIGTERM como PID 1
+- migración: RLS en _prisma_migrations
+- migración: elimina índice trigram duplicado y agrega trigram en codigo_proveedor
+- CI: build de backend y frontend en PR y push a main
+---
+ .github/workflows/ci.yml                      | 49 +++++++++++++++++++
+ backend/Dockerfile.prod                       |  2 +-
+ backend/app.ts                                | 32 +++++++++++-
+ .../migration.sql                             |  4 ++
+ .../migration.sql                             |  8 +++
+ 5 files changed, 92 insertions(+), 3 deletions(-)
+ create mode 100644 .github/workflows/ci.yml
+ create mode 100644 backend/prisma/migrations/20260907000000_rls_prisma_migrations/migration.sql
+ create mode 100644 backend/prisma/migrations/20260907000100_search_index_tuning/migration.sql
+
+diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
+new file mode 100644
+index 0000000..9f7264a
+--- /dev/null
++++ b/.github/workflows/ci.yml
+@@ -0,0 +1,49 @@
++name: CI
++
++on:
++  pull_request:
++  push:
++    branches: [main]
++
++permissions:
++  contents: read
++
++concurrency:
++  group: ci-${{ github.ref }}
++  cancel-in-progress: true
++
++jobs:
++  backend:
++    name: Backend (build)
++    runs-on: ubuntu-latest
++    defaults:
++      run:
++        working-directory: backend
++    steps:
++      - uses: actions/checkout@v4
++      - uses: actions/setup-node@v4
++        with:
++          node-version: 20
++          cache: npm
++          cache-dependency-path: backend/package-lock.json
++      - run: npm ci
++      - run: npx prisma generate
++      - run: npm run build
++
++  frontend:
++    name: Frontend (build)
++    runs-on: ubuntu-latest
++    defaults:
++      run:
++        working-directory: frontend
++    env:
++      VITE_API_URL: https://example.invalid/api
++    steps:
++      - uses: actions/checkout@v4
++      - uses: actions/setup-node@v4
++        with:
++          node-version: 20
++          cache: npm
++          cache-dependency-path: frontend/package-lock.json
++      - run: npm ci
++      - run: npm run build
+diff --git a/backend/Dockerfile.prod b/backend/Dockerfile.prod
+index 7efe911..2f3d4dd 100644
+--- a/backend/Dockerfile.prod
++++ b/backend/Dockerfile.prod
+@@ -30,4 +30,4 @@ USER node
+ 
+ EXPOSE 3000
+ 
+-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/app.js"]
+\ No newline at end of file
++CMD ["sh", "-c", "npx prisma migrate deploy && exec node dist/app.js"]
+\ No newline at end of file
+diff --git a/backend/app.ts b/backend/app.ts
+index 0090c81..9b32fe2 100644
+--- a/backend/app.ts
++++ b/backend/app.ts
+@@ -66,8 +66,36 @@ app.use("/api", apiRoutes);
+ app.use(notFoundHandler);
+ app.use(errorHandler);
+ 
+-app.listen(env.port, () => {
++const server = app.listen(env.port, () => {
+   console.log(`ProductMapper backend escuchando en el puerto ${env.port}`);
+ });
+ 
+-export default app;
+\ No newline at end of file
++// Cierre ordenado: Render envía SIGTERM en cada deploy o suspensión.
++// Se deja de aceptar conexiones, se terminan las peticiones en curso y se
++// liberan las conexiones del pooler de Supabase antes de salir.
++let shuttingDown = false;
++
++async function shutdown(signal: string) {
++  if (shuttingDown) return;
++  shuttingDown = true;
++  console.log(`${signal} recibido, cerrando servidor...`);
++
++  // Red de seguridad: si algo queda colgado, salir igualmente.
++  setTimeout(() => {
++    console.error("Cierre forzado por timeout");
++    process.exit(1);
++  }, 10_000).unref();
++
++  server.close(async () => {
++    try {
++      await prisma.$disconnect();
++    } finally {
++      process.exit(0);
++    }
++  });
++}
++
++process.on("SIGTERM", () => void shutdown("SIGTERM"));
++process.on("SIGINT", () => void shutdown("SIGINT"));
++
++export default app;
+diff --git a/backend/prisma/migrations/20260907000000_rls_prisma_migrations/migration.sql b/backend/prisma/migrations/20260907000000_rls_prisma_migrations/migration.sql
+new file mode 100644
+index 0000000..eb603f0
+--- /dev/null
++++ b/backend/prisma/migrations/20260907000000_rls_prisma_migrations/migration.sql
+@@ -0,0 +1,4 @@
++-- Supabase expone el esquema public por su Data API (PostgREST).
++-- Se activa RLS en la tabla interna de Prisma para que no sea accesible con la anon key.
++-- Prisma conecta como dueño de la tabla (rol postgres), que no se ve afectado por RLS.
++ALTER TABLE "_prisma_migrations" ENABLE ROW LEVEL SECURITY;
+diff --git a/backend/prisma/migrations/20260907000100_search_index_tuning/migration.sql b/backend/prisma/migrations/20260907000100_search_index_tuning/migration.sql
+new file mode 100644
+index 0000000..948f30b
+--- /dev/null
++++ b/backend/prisma/migrations/20260907000100_search_index_tuning/migration.sql
+@@ -0,0 +1,8 @@
++-- Índice duplicado: idx_productos_locales_nombre_trgm (init) e idx_productos_nombre_trgm
++-- (search_indexes) son idénticos. Se conserva este último.
++DROP INDEX IF EXISTS idx_productos_locales_nombre_trgm;
++
++-- La búsqueda usa ILIKE '%texto%' también sobre codigo_proveedor; el índice btree
++-- existente no sirve para ese patrón, un índice trigram sí.
++CREATE INDEX IF NOT EXISTS idx_equivalencias_codigo_proveedor_trgm
++  ON equivalencias USING gin (codigo_proveedor gin_trgm_ops);
+-- 
+2.43.0
+

@@ -25,6 +25,8 @@ services:
       DATABASE_URL: postgresql://${POSTGRES_USER:?Define POSTGRES_USER in .env}:${POSTGRES_PASSWORD:?Define POSTGRES_PASSWORD in .env}@postgres:5432/${POSTGRES_DB:?Define POSTGRES_DB in .env}
       PORT: 3000
       NODE_ENV: production
+      SUPABASE_URL: ${SUPABASE_URL:?Define SUPABASE_URL in .env}
+      SUPABASE_JWT_AUDIENCE: ${SUPABASE_JWT_AUDIENCE:-authenticated}
       CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:8080}
     expose:
       - "3000"
@@ -42,6 +44,10 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile.prod
+      args:
+        VITE_API_URL: /api
+        VITE_SUPABASE_URL: ${VITE_SUPABASE_URL:?Define VITE_SUPABASE_URL in .env}
+        VITE_SUPABASE_ANON_KEY: ${VITE_SUPABASE_ANON_KEY:?Define VITE_SUPABASE_ANON_KEY in .env}
     restart: unless-stopped
     ports:
       - "8080:8080"
