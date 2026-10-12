@@ -97,6 +97,9 @@ export function AppShell({ section, onSectionChange, userEmail, onSignOut, child
             <h1 className="truncate text-sm sm:text-base font-bold text-primary-foreground leading-tight">
               {title}
             </h1>
+            <p className="max-w-full truncate text-[10px] text-primary-foreground/80 sm:hidden">
+              {userEmail}
+            </p>
             <p className="hidden sm:block truncate text-xs text-primary-foreground/75">{sub}</p>
           </div>
           <div className="flex shrink-0 items-center gap-1 sm:gap-3">
@@ -133,7 +136,7 @@ export function AppShell({ section, onSectionChange, userEmail, onSignOut, child
               onClick={() => onSectionChange(id)}
               aria-label={meta[id].title}
               aria-current={active ? "page" : undefined}
-              className={`flex min-w-0 flex-col items-center justify-center gap-1 rounded-lg px-0.5 py-2 text-[9px] font-semibold leading-tight transition-colors ${
+              className={`flex min-w-0 flex-col items-center justify-center gap-1 rounded-lg px-0.5 py-2 text-[10px] font-semibold leading-tight transition-colors ${
                 active
                   ? "text-sidebar-primary"
                   : "text-sidebar-foreground/65 hover:text-sidebar-foreground"

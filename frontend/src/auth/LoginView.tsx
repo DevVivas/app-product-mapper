@@ -1,7 +1,6 @@
 import { FormEvent, useState } from "react";
 import { Boxes } from "lucide-react";
 import { useAuth } from "./AuthContext";
-import backroomImage from "../../../backroom-image.webp";
 
 const inputClass =
   "h-11 w-full rounded-lg bg-input-background border border-border px-3 text-sm outline-none transition focus:ring-2 focus:ring-ring";
@@ -29,7 +28,7 @@ export function LoginView() {
   return (
     <main
       className="relative flex min-h-[100dvh] items-center justify-center overflow-y-auto bg-slate-950 bg-cover bg-center px-4 py-8 sm:py-10"
-      style={{ backgroundImage: `url("${backroomImage}")` }}
+      style={{ backgroundImage: "url('/images/backroom-image.webp')" }}
     >
       <div className="absolute inset-0 bg-slate-950/65 backdrop-blur-[2px]" aria-hidden="true" />
       <section className="relative z-10 my-auto w-full max-w-md rounded-2xl border border-white/60 bg-white/95 p-6 shadow-2xl backdrop-blur-md sm:p-8">
