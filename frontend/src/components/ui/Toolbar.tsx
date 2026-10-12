@@ -31,8 +31,8 @@ export function Toolbar({
   searchClassName?: string;
 }) {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 p-4 border-b border-border">
-      <div className={`flex items-center gap-2 flex-1 min-w-0 ${searchClassName ?? "max-w-md"}`}>
+    <div className="flex flex-col items-stretch gap-3 border-b border-border p-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:p-4">
+      <div className={`flex w-full min-w-0 flex-col gap-2 sm:flex-row sm:items-center ${searchClassName ?? "sm:max-w-md"} sm:flex-1`}>
         <div className="relative flex-1">
           <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input
@@ -61,9 +61,9 @@ export function Toolbar({
         )}
         {children}
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex w-full items-center justify-between gap-2 sm:w-auto sm:justify-end">
         {count !== undefined && total !== undefined && (
-          <span className="text-xs text-muted-foreground whitespace-nowrap">
+          <span className="text-xs text-muted-foreground sm:whitespace-nowrap">
             Mostrando <span className="font-semibold text-foreground">{count}</span> de{" "}
             <span className="font-semibold text-foreground">{total}</span>
           </span>
@@ -71,7 +71,7 @@ export function Toolbar({
         {onNew && (
           <button
             onClick={onNew}
-            className="flex items-center gap-1.5 px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors font-semibold text-[13px] shadow-card whitespace-nowrap"
+            className="flex min-h-10 items-center justify-center gap-1.5 rounded-full bg-primary px-3 sm:px-4 py-2 text-center text-xs sm:text-[13px] font-semibold text-primary-foreground shadow-card transition-colors hover:bg-primary/90 sm:whitespace-nowrap"
           >
             {newLabel ?? "Nuevo"} <Plus size={13} />
           </button>

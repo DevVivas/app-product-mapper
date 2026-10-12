@@ -17,7 +17,7 @@ interface TableProps<T> {
 export function DataTable<T>({ columns, rows, rowKey, emptyMessage = "Sin resultados." }: TableProps<T>) {
   return (
     <div className="overflow-x-auto">
-      <table className="w-full text-sm">
+      <table className="responsive-table w-full text-sm">
         <thead>
           <tr className="border-b border-border bg-muted/30">
             {columns.map((col) => (
@@ -33,15 +33,23 @@ export function DataTable<T>({ columns, rows, rowKey, emptyMessage = "Sin result
           {rows.map((row) => (
             <tr key={rowKey(row)} className="border-b border-border last:border-0 hover:bg-muted/20 transition-colors group">
               {columns.map((col) => (
-                <td key={col.key} className={`px-4 py-3 ${col.className ?? ""}`}>
+                <td
+                  key={col.key}
+                  data-label={col.label}
+                  className={`px-4 py-3 ${col.className ?? ""}`}
+                >
                   {col.render(row)}
                 </td>
               ))}
             </tr>
           ))}
           {rows.length === 0 && (
-            <tr>
-              <td colSpan={columns.length} className="px-4 py-12 text-center text-sm text-muted-foreground">
+            <tr data-empty-row="true">
+              <td
+                data-empty="true"
+                colSpan={columns.length}
+                className="px-4 py-12 text-center text-sm text-muted-foreground"
+              >
                 {emptyMessage}
               </td>
             </tr>

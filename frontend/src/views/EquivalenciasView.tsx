@@ -169,7 +169,7 @@ export function EquivalenciasView() {
         >
           <div className="relative shrink-0">
             <select
-              className="appearance-none pl-3 pr-8 py-2 w-44 shrink-0 text-sm bg-input-background border border-border rounded-lg outline-none transition focus:ring-2 focus:ring-ring cursor-pointer"
+              className="w-full appearance-none rounded-lg border border-border bg-input-background py-2 pl-3 pr-8 text-sm outline-none transition focus:ring-2 focus:ring-ring cursor-pointer sm:w-44 sm:shrink-0"
               value={providerFilter}
               onChange={(e) => {
                 setProviderFilter(e.target.value);

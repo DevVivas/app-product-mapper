@@ -109,8 +109,8 @@ export function EquivalenceFormModal({
   const modeExisting = !values.createNewLocalProduct;
   const modeCls = (active: boolean) =>
     active
-      ? "flex-1 h-9 rounded-full text-[13px] font-semibold bg-primary text-primary-foreground transition-colors shadow-card"
-      : "flex-1 h-9 rounded-full text-[13px] font-semibold text-muted-foreground bg-input-background border border-border hover:text-foreground transition-colors";
+      ? "h-auto min-h-10 flex-1 rounded-full bg-primary px-2 py-2 text-center text-xs font-semibold text-primary-foreground shadow-card transition-colors"
+      : "h-auto min-h-10 flex-1 rounded-full border border-border bg-input-background px-2 py-2 text-center text-xs font-semibold text-muted-foreground transition-colors hover:text-foreground";
 
   return (
     <Modal
@@ -143,7 +143,7 @@ export function EquivalenceFormModal({
           </select>
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div className="flex flex-col gap-1.5">
             <label className={labelCls}>Código del producto</label>
             <input
@@ -166,7 +166,7 @@ export function EquivalenceFormModal({
 
         <div className="flex flex-col gap-1.5">
           <span className={labelCls}>Producto</span>
-          <div className="flex gap-2">
+          <div className="flex flex-col gap-2 sm:flex-row">
             <button type="button" onClick={() => chooseMode(false)} className={modeCls(modeExisting)}>
               Usar producto existente
             </button>
@@ -202,7 +202,7 @@ export function EquivalenceFormModal({
               )}
             </div>
           ) : (
-            <div className="grid grid-cols-2 gap-3 rounded-md bg-secondary/60 p-3">
+            <div className="grid grid-cols-1 gap-3 rounded-md bg-secondary/60 p-3 sm:grid-cols-2">
               <div className="flex flex-col gap-1.5">
                 <label className={labelCls}>Código</label>
                 <input

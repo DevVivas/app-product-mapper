@@ -140,3 +140,82 @@
 code, .font-mono {
   font-family: var(--font-mono);
 }
+
+@media (max-width: 639px) {
+  .responsive-table,
+  .responsive-table tbody {
+    display: block;
+    width: 100%;
+  }
+
+  .responsive-table thead {
+    display: none;
+  }
+
+  .responsive-table tbody tr {
+    display: block;
+    margin: 0.75rem;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    background: var(--card);
+  }
+
+  .responsive-table tbody tr:last-child {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .responsive-table tbody td[data-label] {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    min-width: 0;
+    padding: 0.65rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+    text-align: right;
+    overflow-wrap: anywhere;
+  }
+
+  .responsive-table tbody td[data-label]::before {
+    flex: 0 0 auto;
+    color: var(--muted-foreground);
+    content: attr(data-label);
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-align: left;
+    text-transform: uppercase;
+  }
+
+  .responsive-table tbody td[data-label] > * {
+    min-width: 0;
+    max-width: 68%;
+    overflow-wrap: anywhere;
+  }
+
+  .responsive-table tbody td[data-label] > :not(div) {
+    white-space: normal;
+  }
+
+  .responsive-table tbody td[data-label]:last-child {
+    border-bottom: 0;
+  }
+
+  .responsive-table tbody td[data-label="Acciones"] > div {
+    opacity: 1;
+  }
+
+  .responsive-table tbody td[data-empty="true"] {
+    display: block;
+    margin: 0.75rem;
+    padding: 1.5rem 0.75rem;
+    border: 0;
+    text-align: center;
+  }
+
+  .responsive-table tbody tr[data-empty-row="true"] {
+    border: 0;
+    background: transparent;
+  }
+}

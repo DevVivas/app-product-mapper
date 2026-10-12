@@ -23,14 +23,14 @@ export function Modal({ open, onClose, title, subtitle, children }: ModalProps) 
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 px-4 backdrop-blur-[2px]"
+      className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-slate-900/50 px-3 py-3 backdrop-blur-[2px] sm:px-4"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-lg rounded-2xl bg-card shadow-modal"
+        className="my-auto max-h-[calc(100dvh-1.5rem)] w-full max-w-lg overflow-y-auto rounded-2xl bg-card shadow-modal"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-start justify-between px-6 pt-5 pb-4 border-b border-border">
+        <div className="flex items-start justify-between gap-3 border-b border-border px-4 pb-4 pt-5 sm:px-6">
           <div>
             <h2 className="text-base font-bold text-foreground leading-tight">{title}</h2>
             {subtitle && <p className="text-xs text-muted-foreground mt-0.5">{subtitle}</p>}
@@ -42,7 +42,7 @@ export function Modal({ open, onClose, title, subtitle, children }: ModalProps) 
             <X size={15} />
           </button>
         </div>
-        <div className="px-6 py-5">{children}</div>
+        <div className="px-4 py-4 sm:px-6 sm:py-5">{children}</div>
       </div>
     </div>
   );

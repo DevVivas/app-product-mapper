@@ -177,9 +177,9 @@ export function BuscadorView() {
 
       <form onSubmit={handleSubmit} className="bg-card rounded-xl border border-border p-4 shadow-card">
         <label className="text-xs font-semibold text-muted-foreground mb-1.5 block">Buscar producto</label>
-        <div className="flex gap-2">
+        <div className="flex flex-col gap-2 sm:flex-row">
           <select
-            className="appearance-none pl-3 pr-8 py-2.5 text-sm bg-input-background border border-border rounded-lg outline-none transition focus:ring-2 focus:ring-ring cursor-pointer shrink-0"
+            className="w-full appearance-none rounded-lg border border-border bg-input-background px-3 py-2.5 pr-8 text-sm outline-none transition focus:ring-2 focus:ring-ring sm:w-auto sm:shrink-0"
             value={providerId}
             onChange={(e) => setProviderId(e.target.value)}
           >
@@ -190,7 +190,7 @@ export function BuscadorView() {
               </option>
             ))}
           </select>
-          <div className="relative flex-1">
+          <div className="relative min-w-0 flex-1">
             <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input
               className="w-full pl-9 pr-3 py-2.5 text-sm bg-input-background border border-border rounded-lg outline-none transition focus:ring-2 focus:ring-ring placeholder:text-muted-foreground"
@@ -202,7 +202,7 @@ export function BuscadorView() {
           <button
             type="submit"
             disabled={!query.trim() || status === "loading"}
-            className="flex items-center gap-1.5 pl-4 pr-5 py-2.5 text-sm bg-accent text-accent-foreground rounded-full hover:brightness-95 transition-all font-bold shadow-card disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
+            className="flex min-h-11 items-center justify-center gap-1.5 rounded-full bg-accent px-4 py-2.5 text-sm font-bold text-accent-foreground shadow-card transition-all hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-50 sm:shrink-0"
           >
             <Search size={13} />
             {status === "loading" ? "Buscando…" : "Buscar"}
