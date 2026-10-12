@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="200" height="200">
+  <!-- Fondo / Cara izquierda de la caja -->
+  <path d="M8 24v22l24 12V36L8 24z" fill="#D97706" stroke="#451A03" stroke-width="2.5" stroke-linejoin="round"/>
+  
+  <!-- Cara derecha de la caja -->
+  <path d="M32 58l24-12V24L32 36v22z" fill="#F59E0B" stroke="#451A03" stroke-width="2.5" stroke-linejoin="round"/>
+  
+  <!-- Interior oscuro de la caja -->
+  <path d="M8 24l24 12 24-12-24-12L8 24z" fill="#334155" stroke="#451A03" stroke-width="2.5" stroke-linejoin="round"/>
+  
+  <!-- Solapa trasera izquierda -->
+  <path d="M8 24l10-14 18 8-4 6-24-0z" fill="#B45309" stroke="#451A03" stroke-width="2" stroke-linejoin="round"/>
+  
+  <!-- Solapa trasera derecha -->
+  <path d="M56 24l-10-14-18 8 4 6 24 0z" fill="#D97706" stroke="#451A03" stroke-width="2" stroke-linejoin="round"/>
+  
+  <!-- Flecha de almacenaje / guardar adentro -->
+  <path d="M32 10v16" stroke="#38BDF8" stroke-width="4" stroke-linecap="round"/>
+  <path d="M25 20l7 7 7-7" fill="none" stroke="#38BDF8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
